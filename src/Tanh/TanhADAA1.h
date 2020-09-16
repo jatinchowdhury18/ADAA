@@ -4,7 +4,7 @@
 
 namespace ADAA
 {
-    constexpr float TOL = (float) 1.0e-6;
+    constexpr float TOL = (float) 1.0e-4;
 }
 
 class TanhADAA1 : public BaseTanh
@@ -24,7 +24,7 @@ public:
         float tanhAD1_x = tanhAD1 (x);
 
         float y = illCondition ?
-            std::tanh (0.5f * (x +x1)) :          // fallback for ill-conditioned input
+            std::tanh (0.5f * (x + x1)) :         // fallback for ill-conditioned input
             (tanhAD1_x - tanhAD1_x1) / (x - x1);  // normal mode
 
         // update state

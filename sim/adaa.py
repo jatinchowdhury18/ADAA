@@ -46,12 +46,6 @@ def adaaTanh2(x_):
     x = np.copy(x_)
     x1 = 0.0
     x2 = 0.0
-    
-    # def dilog(x):
-    #     Li_2 = x
-    #     for k in range(2, 10):
-    #         Li_2 += x**k / k**2
-    #     return Li_2
 
     F0 = np.tanh
     F1 = lambda x : np.log(np.cosh(x))

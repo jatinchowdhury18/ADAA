@@ -18,7 +18,7 @@ NLProcessor::NLProcessor (const AudioProcessorValueTreeState& vts, size_t nChann
         nlProcs[1][ch] = std::make_unique<TanhADAA1>();
         nlProcs[2][ch] = std::make_unique<TanhADAA2>();
         nlProcs[3][ch] = std::make_unique<TanhLUT<1024>>();
-        nlProcs[4][ch] = std::make_unique<TanhADAA1LUT<1024>>();
+        nlProcs[4][ch] = std::make_unique<TanhADAA1LUT<32768>>();
         nlProcs[5][ch] = std::make_unique<TanhADAA2LUT<1024>>();
     }
 

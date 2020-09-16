@@ -15,7 +15,7 @@ public:
         float tanhAD1_x = tanhAD1Lut (x);
 
         float y = illCondition ?
-            tanhLut (0.5f * (x +x1)) :          // fallback for ill-conditioned input
+            tanhLut (0.5f * (x + x1)) :          // fallback for ill-conditioned input
             (tanhAD1_x - tanhAD1_x1) / (x - x1);  // normal mode
 
         // update state
@@ -30,7 +30,7 @@ private:
         LUT::minVal, LUT::maxVal, N };
 
     dsp::LookupTableTransform<float> tanhAD1Lut { [=] (float x) { return tanhAD1 (x); },
-        2 * LUT::minVal, 2 * LUT::maxVal, 4 * N };
+        2 * LUT::minVal, 2 * LUT::maxVal, N };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TanhADAA1LUT)
 };
