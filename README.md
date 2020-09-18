@@ -1,5 +1,6 @@
 # Anti-derivative Antialiasing
 
+[![Build Status](https://travis-ci.com/jatinchowdhury18/ADAA.svg?branch=master)](https://travis-ci.com/jatinchowdhury18/ADAA)
 [![License](https://img.shields.io/badge/License-BSD-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 This repository contains an in-progress exploration of anti-derivative 
