@@ -8,15 +8,16 @@ audio processing without the use of oversampling. The goal is to be
 able to compare the effectiveness and computational cost of using
 different ADAA algorithms, in a practical context.
 
-Currently this repo contains a single audio plugin: a distortion effect
-using the `tanh` nonlinearity. The nonlinearity is implemented 6 ways:
+Currently this repo contains a distortion effect built as an audio
+plugin (VST3/AU), using the `tanh` and "hard clipping" nonlinearities.
+Each nonlinearity is implemented 6 ways:
 
-- plain `tanh`
-- `tanh` w/ 1st-order ADAA
-- `tanh` w/ 2nd-order ADAA (WIP)
-- Lookup-table `tanh`
-- Lookup-table `tanh` w/ 1st-order ADAA
-- Lookup-table `tanh` w/ 2nd-order ADAA (WIP)
+- standard implementation
+- 1st-order ADAA
+- 2nd-order ADAA
+- Lookup-table
+- Lookup-table w/ 1st-order ADAA
+- Lookup-table w/ 2nd-order ADAA
 
 Using these implementations, in conjunction with 2x, 4x, or 8x
 oversampling, you can choose the optimal algorithm for your use

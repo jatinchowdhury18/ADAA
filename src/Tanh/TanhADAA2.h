@@ -33,7 +33,7 @@ public:
         float xBar = 0.5f * (x + x2);
         float delta = xBar - x;
 
-        bool illCondition = std::abs (delta) < ADAA::TOL;
+        bool illCondition = std::abs (delta) < 10000 * ADAA::TOL;
 
         return illCondition ?
             std::tanh (0.5f * (xBar + x)) :
@@ -42,7 +42,7 @@ public:
 
     inline float customTanh (float x) noexcept override
     {
-        bool illCondition = std::abs (x - x2) < ADAA::TOL;
+        bool illCondition = std::abs (x - x2) < 10000 * ADAA::TOL;
         float d1 = calcD1 (x, x1);
 
         float y = illCondition ?

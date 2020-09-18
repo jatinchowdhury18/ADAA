@@ -11,9 +11,11 @@ ADAAPlugin::ADAAPlugin()
 void ADAAPlugin::addParameters (Parameters& params)
 {
     StringArray osChoices { "2x", "4x", "8x" };
-    StringArray nlChoices { "Tanh", "Tanh ADAA1", "Tanh ADAA2", "Tanh LUT", "Tanh ADAA1 LUT", "Tanh ADAA2 LUT" };
+    StringArray adaaChoices { "Standard", "ADAA1", "ADAA2", "LUT", "ADAA1 LUT", "ADAA2 LUT" };
+    StringArray nlChoices { "Hard Clip", "Tanh" };
 
     params.push_back (std::make_unique<AudioParameterChoice> ("os", "Oversampling", osChoices, 0));
+    params.push_back (std::make_unique<AudioParameterChoice> ("adaa", "ADAA", adaaChoices, 0));
     params.push_back (std::make_unique<AudioParameterChoice> ("nl", "Nonlinearity", nlChoices, 0));
     params.push_back (std::make_unique<AudioParameterFloat> ("gain_db", "Gain [dB]", -12.0f, 24.0f, 0.0f));
 }

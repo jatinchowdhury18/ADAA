@@ -1,10 +1,16 @@
 #include "NLProcessor.h"
-#include "Tanh/BaseTanh.h"
-#include "Tanh/TanhADAA1.h"
-#include "Tanh/TanhADAA2.h"
-#include "Tanh/TanhLUT.h"
-#include "Tanh/TanhADAA1LUT.h"
-#include "Tanh/TanhADAA2LUT.h"
+#include "Tanh/TanhHeader.h"
+#include "HardClip/HardClipHeader.h"
+
+template <typename T>
+std::vector<std::unique_ptr<BaseNL>> getChannelProcs (int numChannels)
+{
+    std::vector<std::unique_ptr<BaseNL>> chProcs;
+    for (size_t ch = 0; ch < numChannels; ++ch)
+        chProcs.push_back (std::make_unique<T>());
+
+    return chProcs;
+}
 
 NLProcessor::NLProcessor (const AudioProcessorValueTreeState& vts, size_t nChannels) :
     nChannels (nChannels)
@@ -12,18 +18,27 @@ NLProcessor::NLProcessor (const AudioProcessorValueTreeState& vts, size_t nChann
     for (int i = 0; i < 3; ++i)
         oversample[i] = std::make_unique<dsp::Oversampling<float>> (nChannels, i + 1, dsp::Oversampling<float>::filterHalfBandPolyphaseIIR);
 
-    for (size_t ch = 0; ch < nChannels; ++ch)
-    {
-        nlProcs[0][ch] = std::make_unique<BaseTanh>();
-        nlProcs[1][ch] = std::make_unique<TanhADAA1>();
-        nlProcs[2][ch] = std::make_unique<TanhADAA2>();
-        nlProcs[3][ch] = std::make_unique<TanhLUT<1024>>();
-        nlProcs[4][ch] = std::make_unique<TanhADAA1LUT<32768>>();
-        nlProcs[5][ch] = std::make_unique<TanhADAA2LUT<1024>>();
-    }
+    NLSet hcProcs;
+    hcProcs.push_back (getChannelProcs<BaseHardClip> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClipADAA1> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClipADAA2> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClipLUT<1024>> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClipADAA1LUT<32768>> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClipADAA2LUT<32768>> (nChannels));
+    nlProcs.push_back (std::move (hcProcs));
+
+    NLSet tanhProcs;
+    tanhProcs.push_back (getChannelProcs<BaseTanh> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhADAA1> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhADAA2> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhLUT<1024>> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhADAA1LUT<32768>> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhADAA2LUT<32768>> (nChannels));
+    nlProcs.push_back (std::move (tanhProcs));
 
     osParam = vts.getRawParameterValue ("os");
     nlParam = vts.getRawParameterValue ("nl");
+    adaaParam = vts.getRawParameterValue ("adaa");
 }
 
 float NLProcessor::getLatencySamples() const noexcept
@@ -42,10 +57,13 @@ void NLProcessor::prepare (double sampleRate, int samplesPerBlock)
     for (auto& os: oversample)
         os->initProcessing (samplesPerBlock);
 
-    for (auto& nl : nlProcs)
+    for (auto& nlSet : nlProcs)
     {
-        for (size_t ch = 0; ch < nChannels; ++ch)
-            nl[ch]->prepare (sampleRate,samplesPerBlock);
+        for (auto& nl : nlSet)
+        {
+            for (size_t ch = 0; ch < nChannels; ++ch)
+                nl[ch]->prepare (sampleRate,samplesPerBlock);
+        }
     }
 }
 
@@ -56,7 +74,8 @@ void NLProcessor::processBlock (AudioBuffer<float>& buffer)
     dsp::AudioBlock<float> block { buffer };
     auto osBlock = curOversample->processSamplesUp (block);
 
-    auto curNLProc = nlProcs[(int) nlParam->load()];
+    auto& curNLSet = nlProcs[(int) nlParam->load()];
+    auto& curNLProc = curNLSet[(int) adaaParam->load()];
     for (size_t ch = 0; ch < osBlock.getNumChannels(); ++ch)
         curNLProc[ch]->processBlock (osBlock.getChannelPointer (ch), (int) osBlock.getNumSamples());
 

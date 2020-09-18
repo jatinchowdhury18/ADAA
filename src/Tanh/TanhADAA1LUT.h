@@ -15,8 +15,8 @@ public:
         float tanhAD1_x = tanhAD1Lut (x);
 
         float y = illCondition ?
-            tanhLut (0.5f * (x + x1)) :          // fallback for ill-conditioned input
-            (tanhAD1_x - tanhAD1_x1) / (x - x1);  // normal mode
+            tanhLut (0.5f * (x + x1)) :             // fallback for ill-conditioned input
+            (tanhAD1_x - tanhAD1_x1) / (x - x1);    // normal mode
 
         // update state
         tanhAD1_x1 = tanhAD1_x;

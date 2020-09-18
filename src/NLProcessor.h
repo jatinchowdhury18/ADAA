@@ -14,9 +14,12 @@ public:
 
 private:
     std::atomic<float>* osParam = nullptr;
+    std::atomic<float>* adaaParam = nullptr;
     std::atomic<float>* nlParam = nullptr;
 
-    std::unique_ptr<BaseNL> nlProcs[6][2];
+    using NLSet = std::vector<std::vector<std::unique_ptr<BaseNL>>>;
+    std::vector<NLSet> nlProcs;
+
     std::unique_ptr<dsp::Oversampling<float>> oversample[3];
 
     const size_t nChannels;

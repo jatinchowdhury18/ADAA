@@ -8,6 +8,7 @@ BaseViewer::BaseViewer (AudioProcessorValueTreeState& vts) :
     vts.addParameterListener ("gain_db", this);
     vts.addParameterListener ("os", this);
     vts.addParameterListener ("nl", this);
+    vts.addParameterListener ("adaa", this);
 
     setColour (backgroundColourID, Colours::white);
     setColour (pathColourID, Colours::blue);
@@ -18,6 +19,7 @@ BaseViewer::~BaseViewer()
     vts.removeParameterListener ("gain_db", this);
     vts.removeParameterListener ("os", this);
     vts.removeParameterListener ("nl", this);
+    vts.removeParameterListener ("adaa", this);
 }
 
 void BaseViewer::parameterChanged (const String& paramID, float value)
