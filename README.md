@@ -51,7 +51,7 @@ $ cmake --build build --config Release
 ## Literature
 
 - [Reducing the Aliasing of Nonlinear Waveshaping using Continuous-Time Convolution](http://dafx16.vutbr.cz/dafxpapers/20-DAFx-16_paper_41-PN.pdf), Julian D. Parker, Vadim Zavalishin, Efflam Le Bivic, *DAFx-16*
-- [Antiderivative Antialiasing for Memoryless Nonlinearities](https://aaltodoc.aalto.fi/bitstream/handle/123456789/30723/article5.pdf), Stefan Bilbao, Fabian Eqsueda, Julian D. Parker, Vesa Valimaki, *IEEE Signal Processing Letters, Vol. 24, No. 7*, July 2017
+- [Antiderivative Antialiasing for Memoryless Nonlinearities](https://aaltodoc.aalto.fi/bitstream/handle/123456789/30723/article5.pdf), Stefan Bilbao, Fabián Esqueda, Julian D. Parker, Vesa Välimäki, *IEEE Signal Processing Letters, Vol. 24, No. 7*, July 2017
 - [Antiderivative Antialiasing for Stateful Systems](http://dafx2019.bcu.ac.uk/papers/DAFx2019_paper_4.pdf), Martin Holters, *DAFx-19*
 - [Antiderivative Antialiasing in Nonlinear Wave Digital Filters](https://dafx2020.mdw.ac.at/proceedings/papers/DAFx2020_paper_35.pdf), Davide Albertini, Alberto Bernardini, Augusto Sarti, *DAFx-20*
 
