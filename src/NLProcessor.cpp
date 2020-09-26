@@ -1,6 +1,7 @@
 #include "NLProcessor.h"
 #include "Tanh/TanhHeader.h"
 #include "HardClip/HardClipHeader.h"
+#include "StatefulNL.h"
 
 template <typename T>
 std::vector<std::unique_ptr<BaseNL>> getChannelProcs (int numChannels)
@@ -36,6 +37,15 @@ NLProcessor::NLProcessor (const AudioProcessorValueTreeState& vts, size_t nChann
     tanhProcs.push_back (getChannelProcs<TanhADAA2LUT<32768>> (nChannels));
     nlProcs.push_back (std::move (tanhProcs));
 
+    NLSet statefulProcs;
+    statefulProcs.push_back (getChannelProcs<StatefulNL<BaseTanh>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhADAA1, 2, 3>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhADAA2, 2, 3>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhLUT<1024>>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhADAA1LUT<32768>, 2, 3>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhADAA2LUT<32768>, 2, 3>> (nChannels));
+    nlProcs.push_back (std::move (statefulProcs));
+
     osParam = vts.getRawParameterValue ("os");
     nlParam = vts.getRawParameterValue ("nl");
     adaaParam = vts.getRawParameterValue ("adaa");
@@ -54,6 +64,10 @@ float NLProcessor::getLatencySamples() const noexcept
 
 void NLProcessor::prepare (double sampleRate, int samplesPerBlock)
 {
+    mySampleRate = sampleRate;
+    mySamplesPerBlock = samplesPerBlock;
+    prevOS = (int) osParam->load();
+
     for (auto& os: oversample)
         os->initProcessing (samplesPerBlock);
 
@@ -62,14 +76,29 @@ void NLProcessor::prepare (double sampleRate, int samplesPerBlock)
         for (auto& nl : nlSet)
         {
             for (size_t ch = 0; ch < nChannels; ++ch)
-                nl[ch]->prepare (sampleRate,samplesPerBlock);
+                nl[ch]->prepare (sampleRate * oversample[prevOS]->getOversamplingFactor(), samplesPerBlock);
         }
     }
 }
 
 void NLProcessor::processBlock (AudioBuffer<float>& buffer)
 {
-    auto curOversample = oversample[(int) osParam->load()].get();
+    auto curOS = (int) osParam->load();
+    auto curOversample = oversample[curOS].get();
+
+    if (curOS != prevOS)
+    {
+        for (auto& nlSet : nlProcs)
+        {
+            for (auto& nl : nlSet)
+            {
+                for (size_t ch = 0; ch < nChannels; ++ch)
+                    nl[ch]->prepare (mySampleRate * oversample[curOS]->getOversamplingFactor(), mySamplesPerBlock);
+            }
+        }
+
+        prevOS = curOS;
+    }
 
     dsp::AudioBlock<float> block { buffer };
     auto osBlock = curOversample->processSamplesUp (block);

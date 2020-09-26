@@ -11,6 +11,7 @@ NLViewer::NLViewer (AudioProcessorValueTreeState& vts) :
     BaseViewer (vts),
     dryBuffer (createSine (freq, fs, size))
 {
+    nlParam = vts.getRawParameterValue ("nl");
 }
 
 void NLViewer::processBuffer()
@@ -26,6 +27,13 @@ void NLViewer::processBuffer()
     delay.prepare ({ fs, (uint32) size, 1 });
     dsp::AudioBlock<float> delayBlock { delayDryBuffer };
     delay.process (dsp::ProcessContextReplacing<float> { delayBlock });
+
+    // different gain range for waveguide
+    if (nlParam->load() == 2.0f)
+    {
+        wetBuffer.applyGain (0.1f);
+        delayDryBuffer.applyGain (1.5f);
+    }
 }
 
 void NLViewer::updateCurve()

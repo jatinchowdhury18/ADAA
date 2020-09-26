@@ -12,7 +12,7 @@ void ADAAPlugin::addParameters (Parameters& params)
 {
     StringArray osChoices { "2x", "4x", "8x" };
     StringArray adaaChoices { "Standard", "ADAA1", "ADAA2", "LUT", "ADAA1 LUT", "ADAA2 LUT" };
-    StringArray nlChoices { "Hard Clip", "Tanh" };
+    StringArray nlChoices { "Hard Clip", "Tanh", "NL Waveguide" };
 
     params.push_back (std::make_unique<AudioParameterChoice> ("os", "Oversampling", osChoices, 0));
     params.push_back (std::make_unique<AudioParameterChoice> ("adaa", "ADAA", adaaChoices, 0));

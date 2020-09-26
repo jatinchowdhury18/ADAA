@@ -9,10 +9,13 @@ audio processing without the use of oversampling. The goal is to be
 able to compare the effectiveness and computational cost of using
 different ADAA algorithms, in a practical context.
 
-Currently this repo contains a distortion effect built as an audio
-plugin (VST3/AU), using the `tanh` and "hard clipping" nonlinearities.
-Each nonlinearity is implemented 6 ways:
+Currently, this repo contains an audio plugin (VST3/AU) that implements
+3 effects:
+- Hard clip waveshaper
+- `tanh` waveshaper
+- Nonlinear waveguide
 
+Each nonlinearity is implemented 6 ways:
 - standard implementation
 - 1st-order ADAA
 - 2nd-order ADAA
@@ -26,8 +29,8 @@ case, in terms of computational cost, sound quality, etc.
 
 There are still a few bugs in this code, so please bear with me, as I
 continue working on this code. In the future, I would like to
-also include examples of stateful nonlinear functions and nonlinear
-Wave Digital Filters using ADAA. Any and all contributions are welcome!
+also include examples of nonlinear Wave Digital Filters using ADAA.
+Any and all contributions are welcome!
 
 <img src="./res/Screenshot.png" height=350>
 

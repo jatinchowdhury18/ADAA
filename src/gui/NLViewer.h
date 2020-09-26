@@ -11,6 +11,8 @@ public:
     void updateCurve() override;
 
 private:
+    std::atomic<float>* nlParam = nullptr;
+
     const AudioBuffer<float> dryBuffer;
     AudioBuffer<float> wetBuffer;
     AudioBuffer<float> delayDryBuffer;

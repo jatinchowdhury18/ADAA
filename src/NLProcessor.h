@@ -24,5 +24,9 @@ private:
 
     const size_t nChannels;
 
+    double mySampleRate = 44100.0;
+    int mySamplesPerBlock = 128;
+    int prevOS = 0;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NLProcessor)
 };
