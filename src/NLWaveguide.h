@@ -11,7 +11,8 @@ public:
     void prepare (double sampleRate, int samplesPerBlock) override
     {
         float delaySamp = 200.0f * (sampleRate / 44100.0f); // delay length is 200 samples at 44.1 kHz
-        alpha = calcAlpha ((delaySamp + getADAADelaySamp()) / sampleRate);
+        delaySamp -= getADAADelaySamp(); // correct delay line length for ADAA
+        alpha = calcAlpha (delaySamp / sampleRate);
 
         delay.prepare ({ sampleRate, (uint32) samplesPerBlock, 1 });
         delay.setDelay (delaySamp);
@@ -34,7 +35,7 @@ private:
         return std::pow (0.001f, delayTime / t60);
     }
 
-    constexpr float getADAADelaySamp() { return (float) ADAAOrder / 2.0f; }
+    constexpr float getADAADelaySamp() { return ADAAOrder ? 0.5f : 0.0f; }
 
     float alpha = 0.0f;
     dsp::DelayLine<float, dsp::DelayLineInterpolationTypes::Linear> delay { 1 << 20 };
