@@ -26,7 +26,7 @@ public:
         float xBar = 0.5f * (x + x2);
         float delta = xBar - x;
 
-        bool illCondition = std::abs (delta) < 10000.0f * HC_ADAA::TOL;
+        bool illCondition = std::abs (delta) < 6000.0f * HC_ADAA::TOL;
 
         return illCondition ?
             hcLut (0.5f * (xBar + x)) :
@@ -35,7 +35,7 @@ public:
 
     inline float hardClip (float x) noexcept override
     {
-        bool illCondition = std::abs (x - x2) < 10000.0f * ADAA::TOL;
+        bool illCondition = std::abs (x - x2) < 6000.0f * ADAA::TOL;
         float d1 = calcD1 (x);
 
         float y = illCondition ?

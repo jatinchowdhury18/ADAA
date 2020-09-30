@@ -1,7 +1,7 @@
 #include "NLProcessor.h"
 #include "Tanh/TanhHeader.h"
 #include "HardClip/HardClipHeader.h"
-#include "StatefulNL.h"
+#include "NLWaveguide.h"
 
 template <typename T>
 std::vector<std::unique_ptr<BaseNL>> getChannelProcs (int numChannels)
@@ -38,12 +38,12 @@ NLProcessor::NLProcessor (const AudioProcessorValueTreeState& vts, size_t nChann
     nlProcs.push_back (std::move (tanhProcs));
 
     NLSet statefulProcs;
-    statefulProcs.push_back (getChannelProcs<StatefulNL<BaseTanh>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhADAA1, 2, 3>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhADAA2, 2, 3>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhLUT<1024>>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhADAA1LUT<32768>, 2, 3>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<StatefulNL<TanhADAA2LUT<32768>, 2, 3>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<BaseTanh>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhADAA1, 1>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhADAA2, 2>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhLUT<1024>>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhADAA1LUT<32768>, 1>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhADAA2LUT<32768>, 2>> (nChannels));
     nlProcs.push_back (std::move (statefulProcs));
 
     osParam = vts.getRawParameterValue ("os");
