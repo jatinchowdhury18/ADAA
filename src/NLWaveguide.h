@@ -1,15 +1,17 @@
 #pragma once
 
-#include "Tanh/BaseTanh.h"
+#include "TanhNL.h"
 
-template<class Base, int ADAAOrder = 0>
-class NLWaveguide : public Base
+template<class Type, int ADAAOrder = 0>
+class NLWaveguide : public TanhNL<Type>
 {
 public:
     NLWaveguide() = default;
 
     void prepare (double sampleRate, int samplesPerBlock) override
     {
+        TanhNL<Type>::prepare (sampleRate, samplesPerBlock);
+
         float delaySamp = 200.0f * (sampleRate / 44100.0f); // delay length is 200 samples at 44.1 kHz
         delaySamp -= getADAADelaySamp(); // correct delay line length for ADAA
         alpha = calcAlpha (delaySamp / sampleRate);
@@ -24,7 +26,7 @@ public:
         for (int n = 0; n < nSamples; ++n)
         {
             x[n] -= delay.popSample (0);
-            delay.pushSample (0, alpha * Base::customTanh (dd * x[n]) / dd);
+            delay.pushSample (0, alpha * (float) TanhNL<Type>::process ((double) (dd * x[n])) / dd);
         }
     }
 

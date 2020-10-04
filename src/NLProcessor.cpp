@@ -1,7 +1,8 @@
 #include "NLProcessor.h"
-#include "Tanh/TanhHeader.h"
-#include "HardClip/HardClipHeader.h"
+#include "HardClip.h"
+#include "TanhNL.h"
 #include "NLWaveguide.h"
+#include "ADAA/ADAA2LUT.h"
 
 template <typename T>
 std::vector<std::unique_ptr<BaseNL>> getChannelProcs (int numChannels)
@@ -20,30 +21,30 @@ NLProcessor::NLProcessor (const AudioProcessorValueTreeState& vts, size_t nChann
         oversample[i] = std::make_unique<dsp::Oversampling<float>> (nChannels, i + 1, dsp::Oversampling<float>::filterHalfBandPolyphaseIIR);
 
     NLSet hcProcs;
-    hcProcs.push_back (getChannelProcs<BaseHardClip> (nChannels));
-    hcProcs.push_back (getChannelProcs<HardClipADAA1> (nChannels));
-    hcProcs.push_back (getChannelProcs<HardClipADAA2> (nChannels));
-    hcProcs.push_back (getChannelProcs<HardClipLUT<1024>> (nChannels));
-    hcProcs.push_back (getChannelProcs<HardClipADAA1LUT<32768>> (nChannels));
-    hcProcs.push_back (getChannelProcs<HardClipADAA2LUT<32768>> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClip<StandardNL>> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClip<ADAA1>> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClip<ADAA2>> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClip<StandardLUT<(1 << 10)>>> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClip<ADAA1LUT<(1 << 12)>>> (nChannels));
+    hcProcs.push_back (getChannelProcs<HardClip<ADAA2LUT<(1 << 18)>>> (nChannels));
     nlProcs.push_back (std::move (hcProcs));
 
     NLSet tanhProcs;
-    tanhProcs.push_back (getChannelProcs<BaseTanh> (nChannels));
-    tanhProcs.push_back (getChannelProcs<TanhADAA1> (nChannels));
-    tanhProcs.push_back (getChannelProcs<TanhADAA2> (nChannels));
-    tanhProcs.push_back (getChannelProcs<TanhLUT<1024>> (nChannels));
-    tanhProcs.push_back (getChannelProcs<TanhADAA1LUT<32768>> (nChannels));
-    tanhProcs.push_back (getChannelProcs<TanhADAA2LUT<32768>> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhNL<StandardNL>> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhNL<ADAA1>> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhNL<ADAA2>> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhNL<StandardLUT<(1 << 10)>>> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhNL<ADAA1LUT<(1 << 12)>>> (nChannels));
+    tanhProcs.push_back (getChannelProcs<TanhNL<ADAA2LUT<(1 << 18)>>> (nChannels));
     nlProcs.push_back (std::move (tanhProcs));
 
     NLSet statefulProcs;
-    statefulProcs.push_back (getChannelProcs<NLWaveguide<BaseTanh>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhADAA1, 1>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhADAA2, 2>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhLUT<1024>>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhADAA1LUT<32768>, 1>> (nChannels));
-    statefulProcs.push_back (getChannelProcs<NLWaveguide<TanhADAA2LUT<32768>, 2>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<StandardNL>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<ADAA1, 1>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<ADAA2, 2>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<StandardLUT<(1 << 10)>>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<ADAA1LUT<(1 << 12)>, 1>> (nChannels));
+    statefulProcs.push_back (getChannelProcs<NLWaveguide<ADAA2LUT<(1 << 18)>, 2>> (nChannels));
     nlProcs.push_back (std::move (statefulProcs));
 
     osParam = vts.getRawParameterValue ("os");
