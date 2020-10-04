@@ -13,9 +13,9 @@ from IPython.core.display import SVG, Image, display
 # functions for things like saturation, wavefolding, and more. While
 # nonlinear functions can create interesting sounds, they often create
 # difficulty in the world of signal processing, particularly by
-# invalidating many of the handy mathematical theorems that hold up in
+# invalidating many of the handy mathematical theorems that hold up in the
 # world of linear signal processing. One particularly nasty issue that
-# arises when using nonliner functions on digital audio is aliasing.
+# arises when using nonlinear functions on digital audio is aliasing.
 #
 # In this article, we'll give a brief discussion of what aliasing is,
 # and how it is typically dealt with. Then, we'll introduce a relatively
@@ -143,7 +143,7 @@ plt.grid()
 #
 # However, using oversampling has some drawbacks, notably with performance.
 # Specifically, the processing time for an effect will be multiplied by
-# by the oversampling factor. In other words, if a process is done with
+# the oversampling factor. In other words, if a process is done with
 # 4x oversampling, the oversampled process will be $1/4$th as efficient
 # as the original process. With that in mind, let us look for other
 # anti-aliasing methods, that hopefully introduce less performance
@@ -174,7 +174,7 @@ plt.grid()
 #
 # Unfortunately, when $|x[n] - x[n-1]|$ is very small, this equation
 # becomes ill-conditioned, similar to dividing by zero. To remedy this
-# issue, define a tolerance, below which $|x[n] - x[n-1]|$ is treated
+# issue, we define a tolerance, below which $|x[n] - x[n-1]|$ is treated
 # as if it were zero, and then use the following equation to express
 # first-order ADAA:
 # $$
@@ -401,7 +401,7 @@ plt.grid()
 #
 # Note that $\log(x)$ refers to the natural logarithm, and $\text{Li}_2(x)$
 # refers to the [dilogarithm function](https://en.wikipedia.org/wiki/Spence%27s_function).
-# While the dilogarithm is a tricky function implement by hand, there
+# While the dilogarithm is a tricky function to implement by hand, there
 # are decent open-source implementations available in Python's [Scipy library](https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.spence.html),
 # and for C/C++ in the [polylogarithm](https://github.com/Expander/polylogarithm)
 # library on GitHub. Note that depending on the implementation of the
@@ -461,7 +461,7 @@ display(SVG('https://www.osar.fr/notes/waveguides/WG_Nonlinearities.svg'))
 # the error in frequency might be pretty minimal (especially for low-pitched
 # resonators, or systems with high sample rates), it can be noticeable.
 # For example, waveguide resonators are often used to model vibrating
-# guitar strings, an error in the frequency of the waveguide, could make
+# guitar strings, an error in the frequency of the waveguide could make
 # a guitar string go out of tune!
 #
 # In this case, ADAA can be still be used, just with a small adjustment:
