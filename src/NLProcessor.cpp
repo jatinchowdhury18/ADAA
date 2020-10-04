@@ -56,9 +56,8 @@ float NLProcessor::getLatencySamples() const noexcept
 {
     auto latency = oversample[(int) osParam->load()]->getLatencyInSamples();
 
-    const auto nlChoice = (int) nlParam->load();
-    if (nlChoice != 0 && nlChoice != 3) // ADAA mode
-        latency += 0.5f;
+    const auto nlChoice = (int) nlParam->load() % 3;
+    latency += 0.5f * (float) nlChoice;
 
     return latency;
 }

@@ -37,7 +37,7 @@ private:
         return std::pow (0.001f, delayTime / t60);
     }
 
-    constexpr float getADAADelaySamp() { return ADAAOrder ? 0.5f : 0.0f; }
+    constexpr float getADAADelaySamp() { return 0.5f * (float) ADAAOrder; }
 
     float alpha = 0.0f;
     dsp::DelayLine<float, dsp::DelayLineInterpolationTypes::Linear> delay { 1 << 20 };
