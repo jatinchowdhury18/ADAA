@@ -34,6 +34,15 @@ Any and all contributions are welcome!
 
 <img src="./res/Screenshot.png" height=350>
 
+## Installing
+
+To install the plugin, download the correct zip file from the
+[`bin/`](./bin) folder. After extracting the zipped files, you
+may either run the standalone executable directly, or copy the
+plugin binary into the
+[correct directory](https://docs.juce.com/master/tutorial_app_plugin_packaging.html#tutorial_app_plugin_packaging_installation_locations)
+for your plugin format.
+
 ## Building
 
 To build from scratch, you must have CMake installed.
