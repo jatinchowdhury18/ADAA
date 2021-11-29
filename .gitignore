@@ -2,8 +2,9 @@
 build*/
 bin/*[!.zip]
 
-# vscode settings
+# IDE settings
 .vscode/
+.idea/
 
 # Extras
 *.ipynb
